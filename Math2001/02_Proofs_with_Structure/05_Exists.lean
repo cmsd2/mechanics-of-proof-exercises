@@ -21,7 +21,15 @@ example {t : ℝ} (h : ∃ a : ℝ, a * t < 0) : t ≠ 0 := by
     cancel -x at hxt'
     apply ne_of_gt
     apply hxt'
-  · sorry
+  · have hxt' : x * (-t) > 0 :=
+    calc
+      x * (-t) = (-x) * t := by ring
+      _ > 0 := by addarith [hxt]
+    cancel x at hxt'
+    have hxt'' : t < 0 := by addarith[hxt']
+    apply ne_of_lt
+    apply hxt''
+
 
 example : ∃ n : ℤ, 12 * n = 84 := by
   use 7

@@ -117,6 +117,7 @@ example {x y : ℚ} (h : x + y = 5 ∧ x + 2 * y = 7) : x = 3 ∧ y = 2 := by
     _ = 7 - 5 := by rw[h1, h2]
     _ = 2 := by numbers
 
+-- hint: use eq_zero_or_eq_zero_of_mul_eq_zero
 example {a b : ℝ} (h1 : a * b = a) (h2 : a * b = b) :
     a = 0 ∧ b = 0 ∨ a = 1 ∧ b = 1 := by
   have h3 : a = b
