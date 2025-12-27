@@ -114,7 +114,19 @@ example {t : ℝ} (h : ∃ a : ℝ, a * t + 1 < a + t) : t ≠ 1 := by
   addarith[hb]
 
 example {m : ℤ} (h : ∃ a, 2 * a = m) : m ≠ 5 := by
-  sorry
+  obtain ⟨a, ha⟩ := h
+  have ht := le_or_succ_le a 2
+  obtain ht | ht := ht
+  apply ne_of_lt
+  calc
+    m = 2 * a := by addarith[ha]
+    _ ≤ 2 * 2 := by rel[ht]
+    _ < 5 := by numbers
+  apply ne_of_gt
+  calc
+    m = 2 * a := by addarith[ha]
+    _ ≥ 2 * 3 := by rel[ht]
+    _ > 5 := by numbers
 
 example {n : ℤ} : ∃ a, 2 * a ^ 3 ≥ n * a + 7 := by
   sorry
