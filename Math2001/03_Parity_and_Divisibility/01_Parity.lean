@@ -29,7 +29,7 @@ example {n : ℤ} (hn : Odd n) : Odd (3 * n + 2) := by
 example {n : ℤ} (hn : Odd n) : Odd (7 * n - 4) := by
   dsimp [Odd] at *
   obtain ⟨k, hk⟩ := hn
-  use 7 * k - 4
+  use 7 * k + 1
   calc
     7 * n - 4 = 7 * (2 * k + 1) - 4 := by rw [hk]
     _ = 2 * (7 * k + 1) + 1 := by ring
@@ -145,7 +145,7 @@ example {x : ℤ} (hx : Odd x) : Odd (x ^ 3) := by
 example {n : ℤ} (hn : Odd n) : Even (n ^ 2 - 3 * n + 2) := by
   dsimp [Odd, Even] at *
   obtain ⟨nk, hnk⟩ := hn
-  use 2 * nk ^ 2 - 3 * nk + 1
+  use 2 * nk ^ 2 - nk
   calc
     n ^ 2 - 3 * n + 2 = (2 * nk + 1) ^ 2 - 3 * (2 * nk + 1) + 2 := by rw[hnk]
     _ = 4 * nk ^ 2 + 4 * nk + 1 - 6 * nk - 3 + 2 := by ring
@@ -217,4 +217,64 @@ example (n : ℤ) : ∃ m ≥ n, Odd m := by
       _ = 2 * (k + 1) + 1 := by ring
 
 example (a b c : ℤ) : Even (a - b) ∨ Even (a + c) ∨ Even (b - c) := by
-  sorry
+  obtain ha | ha := Int.even_or_odd a
+  · obtain hb | hb := Int.even_or_odd b
+    · dsimp [Odd, Even] at *
+      left
+      obtain ⟨ak, hak⟩ := ha
+      obtain ⟨bk, hbk⟩ := hb
+      use ak - bk
+      calc
+        a - b = (2 * ak) - (2 * bk) := by rw[hak, hbk]
+        _ = 2 * (ak - bk) := by ring
+    · obtain hc | hc := Int.even_or_odd c
+      · right
+        left
+        obtain ⟨ak, hak⟩ := ha
+        obtain ⟨ck, hck⟩ := hc
+        use ak + ck
+        calc
+          a + c = (2 * ak) + (2 * ck) := by rw[hak, hck]
+          _ = 2 * (ak + ck) := by ring
+      · right
+        right
+        obtain ⟨bk, hbk⟩ := hb
+        obtain ⟨ck, hck⟩ := hc
+        use bk - ck
+        calc
+          b - c = (2 * bk + 1) - (2 * ck + 1) := by rw[hbk, hck]
+          _ = 2 * (bk - ck) := by ring
+  · obtain hb | hb := Int.even_or_odd b
+    · obtain hc | hc := Int.even_or_odd c
+      · right
+        right
+        obtain ⟨bk, hbk⟩ := hb
+        obtain ⟨ck, hck⟩ := hc
+        use bk - ck
+        calc
+          b - c = (2 * bk) - (2 * ck) := by rw[hbk, hck]
+          _ = 2 * (bk - ck) := by ring
+      · right
+        left
+        obtain ⟨ak, hak⟩ := ha
+        obtain ⟨ck, hck⟩ := hc
+        use ak + ck + 1
+        calc
+          a + c = (2 * ak + 1) + (2 * ck + 1) := by rw[hak, hck]
+          _ = 2 * (ak + ck + 1) := by ring
+    · obtain hc | hc := Int.even_or_odd c
+      · left
+        obtain ⟨ak, hak⟩ := ha
+        obtain ⟨bk, hbk⟩ := hb
+        use ak - bk
+        calc
+          a - b = (2 * ak + 1) - (2 * bk + 1) := by rw[hak, hbk]
+          _ = 2 * (ak - bk) := by ring
+      · right
+        right
+        obtain ⟨bk, hbk⟩ := hb
+        obtain ⟨ck, hck⟩ := hc
+        use bk - ck
+        calc
+          b - c = (2 * bk + 1) - (2 * ck + 1) := by rw[hbk, hck]
+          _ = 2 * (bk - ck) := by ring
