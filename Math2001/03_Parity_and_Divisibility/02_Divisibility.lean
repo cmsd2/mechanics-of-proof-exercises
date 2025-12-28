@@ -12,7 +12,9 @@ example : (11 : ℕ) ∣ 88 := by
 
 
 example : (-2 : ℤ) ∣ 6 := by
-  sorry
+  dsimp [(· ∣ ·)]
+  use -3
+  numbers
 
 example {a b : ℤ} (hab : a ∣ b) : a ∣ b ^ 2 + 2 * b := by
   obtain ⟨k, hk⟩ := hab
@@ -23,10 +25,21 @@ example {a b : ℤ} (hab : a ∣ b) : a ∣ b ^ 2 + 2 * b := by
 
 
 example {a b c : ℕ} (hab : a ∣ b) (hbc : b ^ 2 ∣ c) : a ^ 2 ∣ c := by
-  sorry
+  dsimp [(· ∣ ·)] at *
+  obtain ⟨x, hx⟩ := hab
+  obtain ⟨y, hy⟩ := hbc
+  use x ^ 2 * y
+  calc
+    c = (a * x) ^ 2 * y := by rw [hy, hx]
+    _ = a ^ 2 * (x ^ 2 * y) := by ring
 
 example {x y z : ℕ} (h : x * y ∣ z) : x ∣ z := by
-  sorry
+  dsimp [(· ∣ ·)] at *
+  obtain ⟨t, ht⟩ := h
+  use (y * t)
+  calc
+    z = x * y * t := by rw [ht]
+    _ = x * (y * t) := by ring
 
 example : ¬(5 : ℤ) ∣ 12 := by
   apply Int.not_dvd_of_exists_lt_and_lt
@@ -51,34 +64,80 @@ example {a b : ℕ} (hb : 0 < b) (hab : a ∣ b) : a ≤ b := by
 
 
 example {a b : ℕ} (hab : a ∣ b) (hb : 0 < b) : 0 < a := by
-  sorry
+  obtain ⟨k, hk⟩ := hab
+  have h1 :=
+  calc
+    0 < b := hb
+    _ = a * k := hk
+  cancel k at h1
 
 /-! # Exercises -/
 
 
 example (t : ℤ) : t ∣ 0 := by
-  sorry
+  use 0
+  calc
+    0 = t * 0 := by ring
 
 example : ¬(3 : ℤ) ∣ -10 := by
-  sorry
+  apply Int.not_dvd_of_exists_lt_and_lt
+  use -4
+  constructor
+  numbers
+  numbers
 
 example {x y : ℤ} (h : x ∣ y) : x ∣ 3 * y - 4 * y ^ 2 := by
-  sorry
+  obtain ⟨k, hk⟩ := h
+  use 3 * k - 4 * x * k ^ 2
+  calc
+    3 * y - 4 * y ^ 2 = 3 * (x * k) - 4 * (x * k) ^ 2 := by rw [hk]
+    _ = x * (3 * k - 4 * x * k ^ 2) := by ring
 
 example {m n : ℤ} (h : m ∣ n) : m ∣ 2 * n ^ 3 + n := by
-  sorry
+  obtain ⟨k, hk⟩ := h
+  use 2 * m ^ 2 * k ^ 3 + k
+  calc
+    2 * n ^ 3 + n = 2 * (m * k) ^ 3 + (m * k) := by rw [hk]
+    _ = m * (2 * m ^ 2 * k ^ 3 + k) := by ring
 
 example {a b : ℤ} (hab : a ∣ b) : a ∣ 2 * b ^ 3 - b ^ 2 + 3 * b := by
-  sorry
+  obtain ⟨k, hk⟩ := hab
+  use 2 * a ^ 2 * k ^ 3 - a * k ^ 2 + 3 * k
+  calc
+    2 * b ^ 3 - b ^ 2 + 3 * b
+      = 2 * (a * k) ^ 3 - (a * k) ^ 2 + 3 * (a * k) := by rw [hk]
+    _ = a * (2 * a ^ 2 * k ^ 3 - a * k ^ 2 + 3 * k) := by ring
 
 example {k l m : ℤ} (h1 : k ∣ l) (h2 : l ^ 3 ∣ m) : k ^ 3 ∣ m := by
-  sorry
+  obtain ⟨p, hp⟩ := h1
+  obtain ⟨q, hq⟩ := h2
+  use p ^ 3 * q
+  calc
+    m = (l ^ 3 * q) := by rw [hq]
+    _ = (k * p) ^ 3 * q := by rw [hp]
+    _ = k ^ 3 * (p ^ 3 * q) := by ring
 
 example {p q r : ℤ} (hpq : p ^ 3 ∣ q) (hqr : q ^ 2 ∣ r) : p ^ 6 ∣ r := by
-  sorry
+  obtain ⟨a, ha⟩ := hpq
+  obtain ⟨b, hb⟩ := hqr
+  use a ^ 2 * b
+  calc
+    r = q ^ 2 * b := by rw [hb]
+    _ = (p ^ 3 * a) ^ 2 * b := by rw [ha]
+    _ = p ^ 6 * (a ^ 2 * b) := by ring
 
 example : ∃ n : ℕ, 0 < n ∧ 9 ∣ 2 ^ n - 1 := by
-  sorry
+  use 6
+  constructor
+  numbers
+  use 7
+  numbers
 
 example : ∃ a b : ℤ, 0 < b ∧ b < a ∧ a - b ∣ a + b := by
-  sorry
+  use 2, 1
+  constructor
+  numbers
+  constructor
+  numbers
+  use 3
+  numbers
